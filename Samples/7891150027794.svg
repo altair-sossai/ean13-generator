@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="0" x2="190" y2="0" stroke="black" stroke-width="190"
+        stroke-dasharray="2 2 2 2 4 2 6 4 2 2 6 4 4 4 2 2 4 4 4 2 4 6 2 2 2 4 6 2 2 2 2 2 6 4 2 2 4 2 4 4 2 6 2 4 2 6 2 4 6 2 2 4 2 2 6 4 2 2" />
+</svg>
