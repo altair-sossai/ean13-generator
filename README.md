@@ -7,10 +7,10 @@ Leia mais sobre o padrão EAN13 no Wikipédia: [EAN-13](https://pt.wikipedia.org
 
 ## Exemplo de uso
 
-Dado a entrada **7891150027794** (Mostarda Hellmann's xd)
+Dado a entrada **789115002779** (Mostarda Hellmann's xd)
 ```csharp
 
-var barcode = new Ean13Barcode("7891150027794");
+var barcode = new Ean13Barcode("789115002779");
 var svg = barcode.Svg();
 
 ```
@@ -25,11 +25,11 @@ Produz o seguinte código **svg**:
 
 ```
 
-Também é possível salvar o código de barras em um arquivo **.png**:
+Também é possível salvar o código de barras em um arquivo *.png*:
 
 ```csharp
 
-var barcode = new Ean13Barcode("7891150027794");
+var barcode = new Ean13Barcode("789115002779");
 barcode.SaveAsPng(@"D:\barcode.png");
 
 ```
