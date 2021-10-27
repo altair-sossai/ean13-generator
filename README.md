@@ -25,11 +25,7 @@ Produz o seguinte código **svg**:
 
 ```
 
-Renderização da imagem:
-
-![Mostarda Hellmann's - 7891150027794](https://raw.githubusercontent.com/altair-sossai/ean13-generator/main/Samples/7891150027794.svg)
-
-Também é possível salvar o código de barras em um arquivo *.png*:
+Também é possível salvar o código de barras em um arquivo **.png**:
 
 ```csharp
 
@@ -37,3 +33,7 @@ var barcode = new Ean13Barcode("7891150027794");
 barcode.SaveAsPng(@"D:\barcode.png");
 
 ```
+
+Renderização da imagem:
+
+![Mostarda Hellmann's - 7891150027794](https://raw.githubusercontent.com/altair-sossai/ean13-generator/main/Samples/7891150027794.svg)
