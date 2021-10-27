@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Ean13.Converters
@@ -9,10 +10,11 @@ namespace Ean13.Converters
         public static string Svg(this Ean13Barcode barcode, int scale = 2)
         {
             var line = new List<int>();
+            var sequence = barcode.Sequence().ToArray();
 
-            for (int i = 1, count = scale; i < barcode.Sequence.Length; i++, count += scale)
+            for (int i = 1, count = scale; i < sequence.Length; i++, count += scale)
             {
-                if (barcode.Sequence[i] == barcode.Sequence[i - 1])
+                if (sequence[i] == sequence[i - 1])
                     continue;
 
                 line.Add(count);

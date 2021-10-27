@@ -1,75 +1,49 @@
-﻿namespace Ean13
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace Ean13
 {
     public class Ean13Barcode
     {
-        private static readonly byte[,] Sequences =
-        {
-            {0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2},
-            {0, 0, 1, 0, 1, 1, 2, 2, 2, 2, 2, 2},
-            {0, 0, 1, 1, 0, 1, 2, 2, 2, 2, 2, 2},
-            {0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 2},
-            {0, 1, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2},
-            {0, 1, 1, 0, 0, 1, 2, 2, 2, 2, 2, 2},
-            {0, 1, 1, 1, 0, 0, 2, 2, 2, 2, 2, 2},
-            {0, 1, 0, 1, 0, 1, 2, 2, 2, 2, 2, 2},
-            {0, 1, 0, 1, 1, 0, 2, 2, 2, 2, 2, 2},
-            {0, 1, 1, 0, 1, 0, 2, 2, 2, 2, 2, 2}
-        };
+        private const string Pattern = @"^\d{12}$";
+        private readonly string _numbers;
 
-        private static readonly byte[,,] Digits =
-        {
-            {{0, 0, 0, 1, 1, 0, 1}, {0, 1, 0, 0, 1, 1, 1}, {1, 1, 1, 0, 0, 1, 0}},
-            {{0, 0, 1, 1, 0, 0, 1}, {0, 1, 1, 0, 0, 1, 1}, {1, 1, 0, 0, 1, 1, 0}},
-            {{0, 0, 1, 0, 0, 1, 1}, {0, 0, 1, 1, 0, 1, 1}, {1, 1, 0, 1, 1, 0, 0}},
-            {{0, 1, 1, 1, 1, 0, 1}, {0, 1, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 1, 0}},
-            {{0, 1, 0, 0, 0, 1, 1}, {0, 0, 1, 1, 1, 0, 1}, {1, 0, 1, 1, 1, 0, 0}},
-            {{0, 1, 1, 0, 0, 0, 1}, {0, 1, 1, 1, 0, 0, 1}, {1, 0, 0, 1, 1, 1, 0}},
-            {{0, 1, 0, 1, 1, 1, 1}, {0, 0, 0, 0, 1, 0, 1}, {1, 0, 1, 0, 0, 0, 0}},
-            {{0, 1, 1, 1, 0, 1, 1}, {0, 0, 1, 0, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0}},
-            {{0, 1, 1, 0, 1, 1, 1}, {0, 0, 0, 1, 0, 0, 1}, {1, 0, 0, 1, 0, 0, 0}},
-            {{0, 0, 0, 1, 0, 1, 1}, {0, 0, 1, 0, 1, 1, 1}, {1, 1, 1, 0, 1, 0, 0}}
-        };
+        private string _barcode;
+        private int _verifiedDigit = -1;
 
         public Ean13Barcode(string numbers)
         {
-            Numbers = numbers;
-            BuildSequence();
+            if (!Regex.IsMatch(numbers, Pattern))
+                throw new ArgumentException("Informe uma sequência numérica com doze (12) dígitos.", nameof(numbers));
+
+            _numbers = numbers;
         }
 
-        public string Numbers { get; }
-        public byte[] Sequence { get; } = new byte[95];
-
-        private void BuildSequence()
+        public int VerifiedDigit
         {
-            var first = Numbers[0] - 48;
-            var i = 0;
-
-            for (byte j = 0, flag = 1; j < 3; j++, flag = (byte) (flag == 1 ? 0 : 1))
-                Sequence[i++] = flag;
-
-            for (byte j = 0; j < 6; j++)
+            get
             {
-                var digit = Numbers[j + 1] - 48;
-                var sequence = Sequences[first, j];
+                if (_verifiedDigit != -1)
+                    return _verifiedDigit;
 
-                for (byte k = 0; k < 7; k++)
-                    Sequence[i++] = Digits[digit, sequence, k];
+                var sum = _numbers
+                    .Select(number => number - 48)
+                    .Select((number, i) => i % 2 == 0 ? number : number * 3)
+                    .Sum();
+
+                var verifiedDigit = (Math.Floor(sum / 10d) + 1) * 10 - sum;
+
+                if (verifiedDigit % 10 == 0)
+                    verifiedDigit = 0;
+
+                return _verifiedDigit = (int) verifiedDigit;
             }
+        }
 
-            for (byte j = 0, flag = 0; j < 5; j++, flag = (byte) (flag == 1 ? 0 : 1))
-                Sequence[i++] = flag;
-
-            for (byte j = 6; j < 12; j++)
-            {
-                var digit = Numbers[j + 1] - 48;
-                var sequence = Sequences[first, j];
-
-                for (byte k = 0; k < 7; k++)
-                    Sequence[i++] = Digits[digit, sequence, k];
-            }
-
-            for (byte j = 0, flag = 1; j < 3; j++, flag = (byte) (flag == 1 ? 0 : 1))
-                Sequence[i++] = flag;
+        public override string ToString()
+        {
+            return string.IsNullOrEmpty(_barcode) ? _barcode = $"{_numbers}{VerifiedDigit}" : _barcode;
         }
     }
 }

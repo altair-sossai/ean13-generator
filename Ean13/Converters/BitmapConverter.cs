@@ -12,7 +12,7 @@ namespace Ean13.Converters
             var bitmap = new Bitmap(width, height);
             var i = 0;
 
-            foreach (var point in barcode.Sequence)
+            foreach (var point in barcode.Sequence())
             {
                 for (var j = 0; j < scale; j++, i++)
                 {
