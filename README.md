@@ -1,6 +1,6 @@
-# Gerador de código de barras EAN13 utilizando SVG
+# Gerador de código de barras EAN13
 
-Dado uma sequência numérica de um código de barras **EAN13**, é gerado um arquivo *.svg* com o desenho do código de barras.
+Dado uma sequência numérica de um código de barras **EAN13**, é gerado um arquivo *.svg* ou *.png* com o desenho do código de barras.
 
 Leia mais sobre o padrão EAN13 no Wikipédia: [EAN-13](https://pt.wikipedia.org/wiki/EAN-13)
 
@@ -10,7 +10,8 @@ Leia mais sobre o padrão EAN13 no Wikipédia: [EAN-13](https://pt.wikipedia.org
 Dado a entrada **7891150027794** (Mostarda Hellmann's xd)
 ```csharp
 
-var svg = Ean13Generator.Svg("7891150027794")
+var barcode = new Ean13Barcode("7891150027794");
+var svg = barcode.Svg();
 
 ```
 
@@ -27,3 +28,12 @@ Produz o seguinte código **svg**:
 Renderização da imagem:
 
 ![Mostarda Hellmann's - 7891150027794](https://raw.githubusercontent.com/altair-sossai/ean13-generator/main/Samples/7891150027794.svg)
+
+Também é possível salvar o código de barras em um arquivo *.png*:
+
+```csharp
+
+var barcode = new Ean13Barcode("7891150027794");
+barcode.SaveAsPng(@"D:\barcode.png");
+
+```
